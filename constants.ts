@@ -1,12 +1,6 @@
 
 import { Service, ServiceCategory, Testimonial } from './types';
 
-import reliance from './assets/hmo/reliance.jpg';
-import hygeia from './assets/hmo/hygeia.jpg';
-import axa from './assets/hmo/axa.WEBP';
-import leadway from './assets/hmo/leadway.png';
-
-
 export const SERVICES: Service[] = [
   // Massage Therapy
   { id: 'm1', name: 'Swedish Massage', price: 30000, category: ServiceCategory.MASSAGE, duration: '60 Min' },
@@ -101,10 +95,10 @@ export const SERVICES: Service[] = [
 ];
 
 export const HMO_PARTNERS = [
-  { name: 'Reliance Health', logo: reliance },
-  { name: 'Hygeia HMO', logo: hygeia },
-  { name: 'AXA Mansard', logo: axa },
-  { name: 'Leadway Health', logo: leadway }
+  { name: 'Reliance Health', logo: '/reliance.jpg' },
+  { name: 'Hygeia HMO', logo: '/hygeia.jpg' },
+  { name: 'AXA Mansard', logo: '/axa.jpg' },
+  { name: 'Leadway Health', logo: '/leadway.jpg' }
 ];
 
 export const TESTIMONIALS: Testimonial[] = [
