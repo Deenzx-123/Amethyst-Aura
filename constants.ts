@@ -96,8 +96,8 @@ export const SERVICES: Service[] = [
 
 export const HMO_PARTNERS = [
   { name: 'Reliance Health', logo: '/reliance.jpg' },
-  { name: 'Hygeia HMO', logo: '/hygeia.jpg' },
-  { name: 'AXA Mansard', logo: '/axa.WEBP' },
+  { name: 'Hygeia HMO', logo: '/Hygeia.jpg' },
+  { name: 'AXA Mansard', logo: '/AXA.webp' },
   { name: 'Leadway Health', logo: '/leadway.png' }
 ];
 
