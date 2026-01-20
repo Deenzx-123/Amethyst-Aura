@@ -1,4 +1,3 @@
-import heroImage from "./assets/hero.jpg";
 import { supabase } from "./supabase";
 
 import { Routes, Route } from "react-router-dom";
@@ -319,7 +318,10 @@ const App: React.FC = () => {
               {/* HERO */}
               <section className="relative h-screen flex items-center lg:items-start overflow-hidden bg-black">
                 <div className="absolute inset-0 z-0">
-                  <img src={heroImage} className="w-full h-full object-cover opacity-70" alt="Spa Haven" />
+                  <img src="/hero.jpg"
+                  className="w-full h-full object-cover opacity-70"
+                  alt="Spa Haven"
+/>
                 </div>
                 <div className="absolute inset-0 z-10 bg-gradient-to-r from-black/80 via-black/40 to-transparent" />
                 <div className="relative z-20 container mx-auto px-8 lg:px-24">
