@@ -341,9 +341,14 @@ const App: React.FC = () => {
                     <p className="text-lg lg:text-xl text-white font-light leading-relaxed max-w-lg">
                       An architectural response to the noise of the world. Curated therapies designed to reset your biological rhythm.
                     </p>
-                    <button onClick={() => setIsBookingVisible(true)} className="group bg-aura-gold text-white px-8 py-4 rounded-full text-[11px] font-black uppercase tracking-[0.4em] flex items-center gap-3">
-                      Book Your Ritual <ArrowRight size={16} className="group-hover:translate-x-2 transition-transform" />
-                    </button>
+                    <button
+  onClick={(e) => scrollToSection(e as any, '#services')}
+  className="group bg-aura-gold text-white px-8 py-4 rounded-full text-[11px] font-black uppercase tracking-[0.4em] flex items-center gap-3"
+>
+              Book Your Ritual
+              <ArrowRight size={16} className="group-hover:translate-x-2 transition-transform" />
+            </button>
+
                   </div>
                 </div>
               </section>
