@@ -97,8 +97,8 @@ export const SERVICES: Service[] = [
 export const HMO_PARTNERS = [
   { name: 'Reliance Health', logo: '/reliance.jpg' },
   { name: 'Hygeia HMO', logo: '/hygeia.jpg' },
-  { name: 'AXA Mansard', logo: '/axa.jpg' },
-  { name: 'Leadway Health', logo: '/leadway.jpg' }
+  { name: 'AXA Mansard', logo: '/axa.WEBP' },
+  { name: 'Leadway Health', logo: '/leadway.png' }
 ];
 
 export const TESTIMONIALS: Testimonial[] = [
