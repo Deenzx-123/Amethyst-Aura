@@ -78,9 +78,18 @@ const App: React.FC = () => {
   useEffect(() => {
     loadBookings();
     const savedServices = localStorage.getItem("aura_services");
+    
     if (savedServices) {
-      setServices(JSON.parse(savedServices));
-    }
+  const parsed = JSON.parse(savedServices);
+  setServices(
+    parsed.map((s: Service) => ({
+      ...s,
+      priceType: s.priceType ?? "fixed",
+      priceRange: s.priceRange
+    }))
+  );
+}
+
   }, []);
 
   useEffect(() => {
