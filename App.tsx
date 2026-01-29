@@ -1,7 +1,5 @@
-import ValentinePopup from "./components/ValentinePopup";
-import heroImage from "./assets/hero.jpg";
 import { supabase } from "./supabase";
-
+import ValentinePopup from "./components/ValentinePopup";
 import { Routes, Route } from "react-router-dom";
 import Admin from "./pages/Admin";
 
@@ -68,7 +66,6 @@ const VALENTINE_SERVICES: Service[] = [
   },
 ];
 
-
 const App: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
@@ -77,7 +74,6 @@ const App: React.FC = () => {
   ...INITIAL_SERVICES,
   ...VALENTINE_SERVICES,
 ]);
-
   const [bookings, setBookings] = useState<Appointment[]>([]);
   const [showConsultationPopup, setShowConsultationPopup] = useState(false);
   const [consultService, setConsultService] = useState<Service | null>(null);
@@ -136,9 +132,18 @@ const App: React.FC = () => {
   useEffect(() => {
     loadBookings();
     const savedServices = localStorage.getItem("aura_services");
+    
     if (savedServices) {
-      setServices(JSON.parse(savedServices));
-    }
+  const parsed = JSON.parse(savedServices);
+  setServices(
+    parsed.map((s: Service) => ({
+      ...s,
+      priceType: s.priceType ?? "fixed",
+      priceRange: s.priceRange
+    }))
+  );
+}
+
   }, []);
 
   useEffect(() => {
@@ -295,20 +300,19 @@ const App: React.FC = () => {
   };
 
   const navLinks = [
-  { name: 'Services', href: '#services' },
-  { name: 'Philosophy', href: '#philosophy' },
-  { name: 'HMO Partners', href: '#hmo' },
-  { name: 'Experience', href: '#experience' },
-  { name: 'Contact', href: '#contact' },
-];
-
+    { name: 'Services', href: '#services' },
+    { name: 'Philosophy', href: '#philosophy' },
+    { name: 'HMO Partners', href: '#hmo' },
+    { name: 'Experience', href: '#experience' },
+    { name: 'Contact', href: '#contact' },
+  ];
+	
 const orderedCategories = [
   ServiceCategory.SPECIALS,
   ...Object.values(ServiceCategory).filter(
     c => c !== ServiceCategory.SPECIALS
   ),
 ];
-
 
   return (
     <Routes>
@@ -325,8 +329,7 @@ const orderedCategories = [
       />
       <Route path="/" element={
         <div className="relative min-h-screen lg:h-screen bg-aura-bone flex flex-col lg:flex-row font-sans lg:overflow-hidden">
-	<ValentinePopup />
-          
+          <ValentinePopup />
           {/* MOBILE NAVBAR */}
           <nav className={`lg:hidden fixed top-0 w-full z-[200] transition-all duration-500 ${isScrolled || isMenuOpen ? 'bg-white/95 backdrop-blur-xl border-b border-aura-beige/20 py-4 shadow-sm' : 'bg-transparent py-6'}`}>
             <div className="px-6 flex items-center justify-between">
@@ -385,7 +388,10 @@ const orderedCategories = [
               {/* HERO */}
               <section className="relative h-screen flex items-center lg:items-start overflow-hidden bg-black">
                 <div className="absolute inset-0 z-0">
-                  <img src={heroImage} className="w-full h-full object-cover opacity-70" alt="Spa Haven" />
+                  <img src="/hero.jpg"
+                  className="w-full h-full object-cover opacity-70"
+                  alt="Spa Haven"
+/>
                 </div>
                 <div className="absolute inset-0 z-10 bg-gradient-to-r from-black/80 via-black/40 to-transparent" />
                 <div className="relative z-20 container mx-auto px-8 lg:px-24">
@@ -400,9 +406,9 @@ const orderedCategories = [
   onClick={(e) => scrollToSection(e as any, '#services')}
   className="group bg-aura-gold text-white px-8 py-4 rounded-full text-[11px] font-black uppercase tracking-[0.4em] flex items-center gap-3"
 >
-  Book Your Ritual
-  <ArrowRight size={16} className="group-hover:translate-x-2 transition-transform" />
-</button>
+              Book Your Ritual
+              <ArrowRight size={16} className="group-hover:translate-x-2 transition-transform" />
+            </button>
 
                   </div>
                 </div>
@@ -450,11 +456,8 @@ const orderedCategories = [
 
               <section id="services" className="py-40 px-8 lg:px-20 bg-white">
                 <h3 className="text-6xl font-serif text-center mb-24">Treatment Menu</h3>
-		<p className="text-center text-gray-500 mb-16">
-  Including our limited Valentine’s Package Offers 💕
-</p>
                 <div className="space-y-32">
-                  {orderedCategories.map((cat) => {
+                  orderedCategories.map((cat) => {
                     const categoryServices = services.filter(s => s.category === cat);
                     if (categoryServices.length === 0) return null;
                     return (
@@ -610,7 +613,7 @@ const orderedCategories = [
                             {slot}
                           </button>
                         ))}
-                      </div>
+                      </div>f
                     </div>
 
                     {/* DETAILS */}
