@@ -130,21 +130,29 @@ const App: React.FC = () => {
   };
 
   useEffect(() => {
-    loadBookings();
-    const savedServices = localStorage.getItem("aura_services");
-    
-    if (savedServices) {
-  const parsed = JSON.parse(savedServices);
-  setServices(
-    parsed.map((s: Service) => ({
-      ...s,
-      priceType: s.priceType ?? "fixed",
-      priceRange: s.priceRange
-    }))
-  );
-}
+  loadBookings();
 
-  }, []);
+  const savedServices = localStorage.getItem("aura_services");
+
+  if (savedServices) {
+    const parsed: Service[] = JSON.parse(savedServices);
+
+    const merged = [
+      ...parsed,
+      ...VALENTINE_SERVICES.filter(
+        v => !parsed.some(p => p.id === v.id)
+      ),
+    ];
+
+    setServices(
+      merged.map((s) => ({
+        ...s,
+        priceType: s.priceType ?? "fixed",
+        priceRange: s.priceRange,
+      }))
+    );
+  }
+}, []);
 
   useEffect(() => {
     localStorage.setItem('aura_services', JSON.stringify(services));
