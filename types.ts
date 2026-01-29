@@ -2,7 +2,7 @@ export enum ServiceCategory {
   FACIALS = "Facials",
   MASSAGES = "Massages",
   BODY = "Body Treatments",
-  SPECIALS = "Valentine Specials",
+  SPECIALS = "Service Specials",
 }
 
 export interface Service {
