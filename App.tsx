@@ -307,9 +307,9 @@ const App: React.FC = () => {
     { name: 'Contact', href: '#contact' },
   ];
 	
-const orderedCategories = [
+const orderedCategories: ServiceCategory[] = [
   ServiceCategory.SPECIALS,
-  ...Object.values(ServiceCategory).filter(
+  ...(Object.values(ServiceCategory) as ServiceCategory[]).filter(
     c => c !== ServiceCategory.SPECIALS
   ),
 ];
@@ -613,7 +613,7 @@ const orderedCategories = [
                             {slot}
                           </button>
                         ))}
-                      </div>f
+                      </div>
                     </div>
 
                     {/* DETAILS */}
