@@ -18,7 +18,7 @@ import Logo from './components/Logo';
 const VALENTINE_SERVICES: Service[] = [
   {
     id: "val-crystal-radiance",
-    name: "Crystal Radiance (Valentine)",
+    name: "Crystal Radiance",
     category: ServiceCategory.SPECIALS,
     price: 61000,
     duration: "Swedish Massage • Brightening Facial • Jelly Pedicure",
@@ -26,7 +26,7 @@ const VALENTINE_SERVICES: Service[] = [
   },
   {
     id: "val-glow-crush",
-    name: "Glow Crush Treatments (Valentine)",
+    name: "Glow Crush Treatments",
     category: ServiceCategory.SPECIALS,
     price: 90000,
     duration: "Deep Tissue Massage • Body Polish & Wrap • Dermaplaning Facial",
@@ -34,7 +34,7 @@ const VALENTINE_SERVICES: Service[] = [
   },
   {
     id: "val-harmony-escape",
-    name: "Harmony Escape (Valentine)",
+    name: "Harmony Escape",
     category: ServiceCategory.SPECIALS,
     price: 74000,
     duration: "Swedish Massage • Microdermabrasion • Jelly Pedicure",
@@ -42,7 +42,7 @@ const VALENTINE_SERVICES: Service[] = [
   },
   {
     id: "val-elite-signature",
-    name: "Elite Signature (Valentine)",
+    name: "Elite Signature",
     category: ServiceCategory.SPECIALS,
     price: 66000,
     duration: "Deep Tissue Massage • Acneout Facial • Jelly Pedicure",
@@ -50,7 +50,7 @@ const VALENTINE_SERVICES: Service[] = [
   },
   {
     id: "val-tranquil-touch",
-    name: "Tranquil Touch (Valentine)",
+    name: "Tranquil Touch",
     category: ServiceCategory.SPECIALS,
     price: 40000,
     duration: "Swedish Massage • Regular Facial",
@@ -58,7 +58,7 @@ const VALENTINE_SERVICES: Service[] = [
   },
   {
     id: "val-luxe",
-    name: "Luxe (Valentine)",
+    name: "Luxe",
     category: ServiceCategory.SPECIALS,
     price: 54000,
     duration: "Swedish Massage • Jelly Pedicure • Basic Facial",
@@ -470,9 +470,6 @@ const orderedCategories: ServiceCategory[] = [
 
               <section id="services" className="py-40 px-8 lg:px-20 bg-white">
                 <h3 className="text-6xl font-serif text-center mb-24">Treatment Menu</h3>
-				  <p className="text-center text-gray-500 mb-16">
-  Including our limited Valentine’s Package Offers 💕
-</p>
                 <div className="space-y-32">
   {orderedCategories.map((cat) => {
     const categoryServices = services.filter(s => s.category === cat);
