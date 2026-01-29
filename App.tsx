@@ -520,23 +520,53 @@ const orderedCategories: ServiceCategory[] = [
 </div>
               </section>
 
-              <footer id="contact" className="py-40 px-8 lg:px-20 bg-aura-charcoal text-aura-bone">
-                <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-32">
-                  <div className="space-y-12">
-                    <h3 className="text-6xl font-serif leading-tight">Ready for <span className="italic text-aura-gold">Restoration.</span></h3>
-                    <div className="space-y-8 text-white/60">
-                      <p className="flex gap-4"><MapPin size={24} className="text-aura-gold" /> {SPA_CONTACT.address}</p>
-                      <p className="flex gap-4"><Phone size={24} className="text-aura-gold" /> {SPA_CONTACT.phones[0]}</p>
-                      <p className="flex gap-4"><Mail size={24} className="text-aura-gold" /> {SPA_CONTACT.email}</p>
+              {/* Footer */}
+          <footer id="contact" className="py-40 px-8 lg:px-20 bg-aura-charcoal text-aura-bone relative z-10">
+            <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-32 items-center">
+              <div className="space-y-12">
+                <header className="space-y-6">
+                  <span className="text-[10px] font-black uppercase tracking-[0.6em] text-aura-gold">Contact Us</span>
+                  <h3 className="text-6xl font-serif leading-tight">Ready for <br /><span className="italic font-light text-aura-gold">Restoration.</span></h3>
+                </header>
+                <div className="grid gap-12 text-sm font-light text-aura-bone/60">
+                   <a href={SPA_CONTACT.googleMapsLink} target="_blank" rel="noopener noreferrer" className="flex gap-8 group cursor-pointer">
+                    <div className="p-4 rounded-full border border-white/10 group-hover:border-aura-gold transition-colors shrink-0"><MapPin size={24} className="text-aura-gold" /></div>
+                    <div className="space-y-2">
+                      <p className="text-[10px] font-black uppercase tracking-widest text-white/40">Address</p>
+                      <p className="tracking-wide leading-relaxed max-w-xs text-white/90 group-hover:text-aura-gold transition-colors">{SPA_CONTACT.address}</p>
+                    </div>
+                  </a>
+                   <div className="flex gap-8 group">
+                    <div className="p-4 rounded-full border border-white/10 shrink-0"><Phone size={24} className="text-aura-gold" /></div>
+                    <div className="space-y-2"><p className="text-[10px] font-black uppercase tracking-widest text-white/40">Inquiries</p>
+                      {SPA_CONTACT.phones.map((p, i) => (<a key={i} href={`tel:${p}`} className="block tracking-wide text-white/90 hover:text-aura-gold transition-colors">{p}</a>))}
+                    </div>
+                  </div>
+                  <div className="flex gap-8 group">
+                    <div className="p-4 rounded-full border border-white/10 shrink-0"><Mail size={24} className="text-aura-gold" /></div>
+                    <div className="space-y-2"><p className="text-[10px] font-black uppercase tracking-widest text-white/40">Email</p>
+                      <a href={`mailto:${SPA_CONTACT.email}`} className="tracking-wide text-white/90 hover:text-aura-gold transition-colors">{SPA_CONTACT.email}</a>
                     </div>
                   </div>
                 </div>
-                <div className="mt-40 pt-16 border-t border-white/5 text-[9px] font-black uppercase tracking-widest opacity-30">
-                  © {new Date().getFullYear()} Amethyst Aura Spa
-                </div>
-              </footer>
+              </div>
+              
+              <div className="relative aspect-[4/5] lg:aspect-square overflow-hidden rounded-[3.5rem] shadow-2xl group border border-white/5">
+                <img 
+                  src="https://images.unsplash.com/photo-1544161515-4ab6ce6db874?auto=format&fit=crop&q=80&w=1000" 
+                  className="w-full h-full object-cover grayscale opacity-80 transition-all duration-1000 group-hover:scale-110 group-hover:grayscale-0 group-hover:opacity-100" 
+                  alt="Spa Treatment Room" 
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-aura-charcoal/80 via-transparent to-transparent opacity-60" />
+              </div>
             </div>
-          </div>
+            
+            <div className="mt-40 pt-16 border-t border-white/5 flex justify-between items-center text-[9px] font-black uppercase tracking-[0.5em] text-white/30">
+              <p>© {new Date().getFullYear()} Amethyst Aura Spa</p>
+            </div>
+          </footer>
+        </div>
+      </div>
 
           {/* CONSULTATION POPUP (KEEPING YOUR NEW DESIGN) */}
           {showConsultationPopup && consultService && (
