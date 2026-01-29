@@ -108,8 +108,8 @@ export const TESTIMONIALS: Testimonial[] = [
 ];
 
 export const SPA_CONTACT = {
-  address: 'J9H2+4X2, Plot 6 Acme Rd, Ogba, Ikeja, Lagos',
-  googleMapsLink: 'https://www.google.com/maps/place/Amethyst+aura+Aesthetics+spa/',
+  address: 'J9H2+4X2, Plot 6 Acme Rd, opposite Boulos Enterprise, Ogba, Ikeja 101233, Lagos opposite Boulos Enterprise Agidingbi Ikeja, Ikeja, 100263, Lagos Ikeja',
+  googleMapsLink: 'https://maps.app.goo.gl/FheDTQ1e9VVF4FTc7',
   phones: ['+234 904 402 4821', '+234 806 940 5450'],
   email: 'amethystauramedspa26@gmail.com',
   hours: 'Monday – Sunday, 9:00 AM – 8:00 PM'
