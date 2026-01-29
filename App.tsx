@@ -457,41 +457,66 @@ const orderedCategories: ServiceCategory[] = [
               <section id="services" className="py-40 px-8 lg:px-20 bg-white">
                 <h3 className="text-6xl font-serif text-center mb-24">Treatment Menu</h3>
                 <div className="space-y-32">
-                  orderedCategories.map((cat) => {
-                    const categoryServices = services.filter(s => s.category === cat);
-                    if (categoryServices.length === 0) return null;
-                    return (
-                      <div key={cat}>
-                        <h4 className="text-[10px] font-black uppercase tracking-[0.5em] text-aura-gold mb-12 text-center">{cat}</h4>
-                        <div className="grid gap-4 max-w-4xl mx-auto">
-                          {categoryServices.map((service) => {
-                            const isSelected = !!selectedServices.find(s => s.id === service.id);
-                            return (
-                              <div 
-                                key={service.id} 
-                                onClick={() => toggleService(service)} 
-                                className={`group flex items-center justify-between p-8 rounded-3xl border transition-all duration-300 cursor-pointer 
-                                  ${isSelected ? 'border-aura-gold bg-aura-bone/50 shadow-lg' : 'border-aura-beige/20 hover:border-aura-gold/50 hover:bg-aura-bone/20 hover:shadow-lg'}`}
-                              >
-                                <div>
-                                  <h5 className="text-lg lg:text-xl font-bold text-aura-charcoal">{service.name}</h5>
-                                  <p className="text-[10px] text-aura-slate/40 uppercase tracking-widest font-bold">{service.duration || 'Arrival Prep Incl.'}</p>
-                                </div>
-                                <div className="flex items-center gap-6">
-                                  <span className="text-xl font-serif italic text-aura-gold">{service.priceType === "variable" ? "Price varies" : `₦${service.price?.toLocaleString()}`}</span>
-                                  {/* Button hover fix logic */}
-                                  <div className={`w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300 ${isSelected ? 'bg-aura-gold text-white' : 'bg-aura-bone group-hover:bg-aura-gold group-hover:text-white'}`}>
-                                    {isSelected ? <CheckCircle size={18} /> : <Plus size={18} />}
-                                  </div>
-                                </div>
-                              </div>
-                            );
-                          })}
-                        </div>
-                      </div>
-                    );
-                  })}
+  {orderedCategories.map((cat) => {
+    const categoryServices = services.filter(s => s.category === cat);
+    if (categoryServices.length === 0) return null;
+
+    return (
+      <div key={cat}>
+        <h4 className="text-[10px] font-black uppercase tracking-[0.5em] text-aura-gold mb-12 text-center">
+          {cat}
+        </h4>
+
+        <div className="grid gap-4 max-w-4xl mx-auto">
+          {categoryServices.map((service) => {
+            const isSelected = !!selectedServices.find(s => s.id === service.id);
+            return (
+              <div
+                key={service.id}
+                onClick={() => toggleService(service)}
+                className={`group flex items-center justify-between p-8 rounded-3xl border transition-all duration-300 cursor-pointer 
+                  ${
+                    isSelected
+                      ? 'border-aura-gold bg-aura-bone/50 shadow-lg'
+                      : 'border-aura-beige/20 hover:border-aura-gold/50 hover:bg-aura-bone/20 hover:shadow-lg'
+                  }`}
+              >
+                <div>
+                  <h5 className="text-lg lg:text-xl font-bold text-aura-charcoal">
+                    {service.name}
+                  </h5>
+                  <p className="text-[10px] text-aura-slate/40 uppercase tracking-widest font-bold">
+                    {service.duration || 'Arrival Prep Incl.'}
+                  </p>
                 </div>
+
+                <div className="flex items-center gap-6">
+                  <span className="text-xl font-serif italic text-aura-gold">
+                    {service.priceType === "variable"
+                      ? "Price varies"
+                      : `₦${service.price?.toLocaleString()}`
+                    }
+                  </span>
+
+                  <div
+                    className={`w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300 
+                      ${
+                        isSelected
+                          ? 'bg-aura-gold text-white'
+                          : 'bg-aura-bone group-hover:bg-aura-gold group-hover:text-white'
+                      }`}
+                  >
+                    {isSelected ? <CheckCircle size={18} /> : <Plus size={18} />}
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    );
+  })}
+</div>
               </section>
 
               <footer id="contact" className="py-40 px-8 lg:px-20 bg-aura-charcoal text-aura-bone">
