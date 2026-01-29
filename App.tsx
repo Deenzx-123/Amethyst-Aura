@@ -70,10 +70,7 @@ const App: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   
-  const [services, setServices] = useState<Service[]>([
-  ...INITIAL_SERVICES,
-  ...VALENTINE_SERVICES,
-]);
+  const [services, setServices] = useState<Service[]>([]);
   const [bookings, setBookings] = useState<Appointment[]>([]);
   const [showConsultationPopup, setShowConsultationPopup] = useState(false);
   const [consultService, setConsultService] = useState<Service | null>(null);
@@ -129,7 +126,7 @@ const App: React.FC = () => {
     setBookings(mappedBookings);
   };
 
-  useEffect(() => {
+ useEffect(() => {
   loadBookings();
 
   const savedServices = localStorage.getItem("aura_services");
@@ -145,14 +142,23 @@ const App: React.FC = () => {
     ];
 
     setServices(
-      merged.map((s) => ({
+      merged.map(s => ({
         ...s,
         priceType: s.priceType ?? "fixed",
         priceRange: s.priceRange,
       }))
     );
+  } else {
+    const merged = [
+      ...INITIAL_SERVICES,
+      ...VALENTINE_SERVICES,
+    ];
+
+    setServices(merged);
+    localStorage.setItem("aura_services", JSON.stringify(merged));
   }
 }, []);
+
 
   useEffect(() => {
     localStorage.setItem('aura_services', JSON.stringify(services));
@@ -464,6 +470,9 @@ const orderedCategories: ServiceCategory[] = [
 
               <section id="services" className="py-40 px-8 lg:px-20 bg-white">
                 <h3 className="text-6xl font-serif text-center mb-24">Treatment Menu</h3>
+				  <p className="text-center text-gray-500 mb-16">
+  Including our limited Valentine’s Package Offers 💕
+</p>
                 <div className="space-y-32">
   {orderedCategories.map((cat) => {
     const categoryServices = services.filter(s => s.category === cat);
