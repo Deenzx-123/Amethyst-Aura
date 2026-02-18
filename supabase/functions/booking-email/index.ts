@@ -294,7 +294,7 @@ serve(async (req) => {
     // PATH A: status → 'confirmed' → confirmation email to CUSTOMER
     if (type === 'confirmed') {
       await resend.emails.send({
-        from: "Amethyst Aura <noreply@hello.amethystauraspa.com.ng>",
+        from: "Amethyst Aura <noreply@amethystauraspa.com.ng>",
         to: [email],
         subject: `✦ Your Appointment is Confirmed — Amethyst Aura`,
         html: customerEmailHtml({ name, date, time, services, total_price }),
@@ -308,7 +308,7 @@ serve(async (req) => {
     // PATH C: status → 'completed' → thank you + review email to CUSTOMER
     if (type === 'completed') {
       await resend.emails.send({
-        from: "Amethyst Aura <noreply@hello.amethystauraspa.com.ng>",
+        from: "Amethyst Aura <noreply@amethystauraspa.com.ng>",
         to: [email],
         subject: `🤍 Thank You for Visiting — Amethyst Aura`,
         html: thankYouEmailHtml({ name, services, total_price }),
@@ -321,7 +321,7 @@ serve(async (req) => {
 
     // PATH B: receipt uploaded → notification email to ADMIN
     await resend.emails.send({
-      from: "Amethyst Aura <noreply@hello.amethystauraspa.com.ng>",
+      from: "Amethyst Aura <noreply@amethystauraspa.com.ng>",
       to: ["amethystauramedspa26@gmail.com"],
       subject: `⚡ Receipt Uploaded: ${name} — Action Required`,
       html: adminEmailHtml({ name, email, phone, date, time, services, total_price, receipt_url }),
