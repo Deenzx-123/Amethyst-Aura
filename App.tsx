@@ -568,7 +568,7 @@ const handleReceiptUpload = async () => {
                 <button onClick={() => setIsBookingVisible(false)} className="p-3 hover:bg-aura-bone rounded-full transition-all"><X size={24} /></button>
               </header>
 
-              <div className="flex-1 overflow-y-auto custom-scrollbar p-10">
+              <div className="flex-1 overflow-y-auto custom-scrollbar p-10 pb-28">
                 {!isBookingSuccess && selectedServices.length > 0 && (
                   <div className="mb-10 p-6 bg-aura-bone rounded-[2rem] space-y-4">
                     <p className="text-[10px] font-black uppercase tracking-widest text-aura-gold">Selected Rituals</p>
