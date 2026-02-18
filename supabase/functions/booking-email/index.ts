@@ -323,7 +323,7 @@ serve(async (req) => {
     await resend.emails.send({
       from: "Amethyst Aura <noreply@amethystauraspa.com.ng>",
       to: ["amethystauramedspa26@gmail.com"],
-      subject: `⚡ Receipt Uploaded: ${name} — Action Required`,
+      subject: `⚡New Booking Received: ${name} — Action Required`,
       html: adminEmailHtml({ name, email, phone, date, time, services, total_price, receipt_url }),
     });
     return new Response(JSON.stringify({ success: true }), {
