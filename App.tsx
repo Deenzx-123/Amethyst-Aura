@@ -1,6 +1,9 @@
 import { supabase } from "./supabase";
 import { Routes, Route } from "react-router-dom";
 import Admin from "./pages/Admin";
+import ReviewPage from "./pages/ReviewPage";
+import ReviewsSection from "./components/ReviewsSection";
+
 
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { 
@@ -349,6 +352,7 @@ const handleReceiptUpload = async () => {
   return (
     <Routes>
       <Route path="/admin" element={<Admin services={services} bookings={bookings} setServices={setServices} setBookings={setBookings} />} />
+	<Route path="/review" element={<ReviewPage />} />
       <Route path="/" element={
         <div className="relative min-h-screen lg:h-screen bg-aura-bone flex flex-col lg:flex-row font-sans lg:overflow-hidden">
           <nav className={`lg:hidden fixed top-0 w-full z-[200] transition-all duration-500 ${isScrolled || isMenuOpen ? 'bg-white/95 backdrop-blur-xl border-b border-aura-beige/20 py-4 shadow-sm' : 'bg-transparent py-6'}`}>
@@ -497,6 +501,7 @@ const handleReceiptUpload = async () => {
                   })}
                 </div>
               </section>
+	<ReviewsSection />
 
               <footer id="contact" className="py-40 px-8 lg:px-20 bg-aura-charcoal text-aura-bone relative z-10">
                 <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-32 items-center">
