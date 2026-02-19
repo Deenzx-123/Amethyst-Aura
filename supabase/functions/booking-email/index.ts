@@ -251,7 +251,7 @@ function thankYouEmailHtml(data: any): string {
           <td style="background:#1a1600;border-left:3px solid #c9a84c;border-right:3px solid #c9a84c;padding:36px 40px;text-align:center;">
             <p style="margin:0 0 8px;font-size:10px;letter-spacing:4px;color:#c9a84c;text-transform:uppercase;">Share Your Experience</p>
             <p style="margin:0 0 24px;font-size:14px;color:#888888;line-height:1.8;">Your feedback helps us grow and helps others discover the sanctuary they deserve. Would you take a moment to leave us a review?</p>
-            <a href="https://wa.me/2349044024821?text=Hi%20Amethyst%20Aura!%20I%20just%20had%20a%20session%20and%20wanted%20to%20share%20my%20experience%20%F0%9F%A4%8D"
+            <a href="https://amethystauraspa.com.ng/review"
                style="display:inline-block;background:#c9a84c;color:#000000;text-decoration:none;padding:14px 36px;font-size:11px;letter-spacing:3px;text-transform:uppercase;font-family:Arial,sans-serif;">
               Leave a Review ✦
             </a>
