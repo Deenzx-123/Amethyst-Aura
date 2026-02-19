@@ -602,7 +602,7 @@ const handleReceiptUpload = async () => {
         </div>
       ) : (
         <div className="space-y-2">
-          <p><strong>Bank:</strong> Lotus Bank Bank</p>
+          <p><strong>Bank:</strong> Lotus Bank</p>
           <p><strong>Account Name:</strong> Amethyst Aura Enterprises</p>
           <p><strong>Account Number:</strong> 1011134995</p>
         </div>
