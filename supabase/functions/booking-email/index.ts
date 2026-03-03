@@ -300,15 +300,15 @@ function pendingPaymentEmailHtml(data: any): string {
             <table width="100%" cellpadding="0" cellspacing="0">
               <tr>
                 <td style="padding:8px 0;color:#888888;font-size:12px;letter-spacing:2px;text-transform:uppercase;width:120px;">Name</td>
-                <td style="padding:8px 0;color:#ffffff;font-size:14px;">\${name}</td>
+                <td style="padding:8px 0;color:#ffffff;font-size:14px;">${name}</td>
               </tr>
               <tr>
                 <td style="padding:8px 0;color:#888888;font-size:12px;letter-spacing:2px;text-transform:uppercase;">Email</td>
-                <td style="padding:8px 0;color:#ffffff;font-size:14px;">\${email}</td>
+                <td style="padding:8px 0;color:#ffffff;font-size:14px;">${email}</td>
               </tr>
               <tr>
                 <td style="padding:8px 0;color:#888888;font-size:12px;letter-spacing:2px;text-transform:uppercase;">Phone</td>
-                <td style="padding:8px 0;color:#ffffff;font-size:14px;">\${phone}</td>
+                <td style="padding:8px 0;color:#ffffff;font-size:14px;">${phone}</td>
               </tr>
             </table>
           </td>
@@ -320,11 +320,11 @@ function pendingPaymentEmailHtml(data: any): string {
             <table width="100%" cellpadding="0" cellspacing="0">
               <tr>
                 <td style="padding:8px 0;color:#888888;font-size:12px;letter-spacing:2px;text-transform:uppercase;width:120px;">Date</td>
-                <td style="padding:8px 0;color:#ffffff;font-size:14px;">\${date}</td>
+                <td style="padding:8px 0;color:#ffffff;font-size:14px;">${date}</td>
               </tr>
               <tr>
                 <td style="padding:8px 0;color:#888888;font-size:12px;letter-spacing:2px;text-transform:uppercase;">Time</td>
-                <td style="padding:8px 0;color:#ffffff;font-size:14px;">\${time}</td>
+                <td style="padding:8px 0;color:#ffffff;font-size:14px;">${time}</td>
               </tr>
             </table>
           </td>
@@ -334,10 +334,10 @@ function pendingPaymentEmailHtml(data: any): string {
           <td style="background:#141414;border-left:3px solid #c9a84c;border-right:3px solid #c9a84c;padding:0 40px 36px;">
             <p style="margin:0 0 16px;font-size:10px;letter-spacing:4px;color:#c9a84c;text-transform:uppercase;">Services Selected</p>
             <table width="100%" cellpadding="0" cellspacing="0">
-              \${serviceRows}
+              ${serviceRows}
               <tr>
                 <td style="padding:16px 0 0;color:#ffffff;font-size:12px;letter-spacing:3px;text-transform:uppercase;">Total Amount Due</td>
-                <td style="padding:16px 0 0;text-align:right;color:#c9a84c;font-size:20px;">₦\${total_price?.toLocaleString() ?? "0"}</td>
+                <td style="padding:16px 0 0;text-align:right;color:#c9a84c;font-size:20px;">₦${total_price?.toLocaleString() ?? "0"}</td>
               </tr>
             </table>
           </td>
