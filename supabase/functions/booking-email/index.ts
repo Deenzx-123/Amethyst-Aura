@@ -211,8 +211,6 @@ function thankYouEmailHtml(data: any): string {
   <table width="100%" cellpadding="0" cellspacing="0" style="background:#0d0d0d;padding:40px 0;">
     <tr><td align="center">
       <table width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;">
-
-        <!-- Header -->
         <tr>
           <td style="background:#111111;border-top:3px solid #c9a84c;padding:50px 40px;text-align:center;">
             <p style="margin:0 0 8px;font-size:11px;letter-spacing:6px;color:#c9a84c;text-transform:uppercase;">Amethyst Aura Aesthetics Spa</p>
@@ -222,16 +220,12 @@ function thankYouEmailHtml(data: any): string {
             <p style="margin:16px 0 0;font-size:13px;color:#888888;letter-spacing:1px;">It was a pleasure having you with us.</p>
           </td>
         </tr>
-
-        <!-- Message -->
         <tr>
           <td style="background:#141414;border-left:3px solid #c9a84c;border-right:3px solid #c9a84c;padding:36px 40px;">
             <p style="margin:0;font-size:14px;color:#888888;line-height:1.9;">We hope your experience at Amethyst Aura left you feeling restored, radiant, and completely at peace. It was truly our honour to care for you.</p>
             <p style="margin:20px 0 0;font-size:14px;color:#888888;line-height:1.9;">Your visit matters to us deeply, and we would love to hear about your experience.</p>
           </td>
         </tr>
-
-        <!-- Services Summary -->
         <tr>
           <td style="background:#141414;border-left:3px solid #c9a84c;border-right:3px solid #c9a84c;padding:0 40px 36px;">
             <div style="height:1px;background:#2a2a2a;margin-bottom:28px;"></div>
@@ -245,8 +239,6 @@ function thankYouEmailHtml(data: any): string {
             </table>
           </td>
         </tr>
-
-        <!-- Review Request -->
         <tr>
           <td style="background:#1a1600;border-left:3px solid #c9a84c;border-right:3px solid #c9a84c;padding:36px 40px;text-align:center;">
             <p style="margin:0 0 8px;font-size:10px;letter-spacing:4px;color:#c9a84c;text-transform:uppercase;">Share Your Experience</p>
@@ -257,16 +249,12 @@ function thankYouEmailHtml(data: any): string {
             </a>
           </td>
         </tr>
-
-        <!-- Come Back -->
         <tr>
           <td style="background:#111111;border-left:3px solid #c9a84c;border-right:3px solid #c9a84c;padding:36px 40px;text-align:center;">
             <p style="margin:0;font-size:14px;color:#888888;line-height:1.8;font-style:italic;">"Stillness is not the absence of life — it is its fullest expression."</p>
             <p style="margin:20px 0 0;font-size:13px;color:#666666;">We look forward to welcoming you back soon.</p>
           </td>
         </tr>
-
-        <!-- Footer -->
         <tr>
           <td style="background:#0d0d0d;border:3px solid #c9a84c;border-top:none;padding:24px 40px;text-align:center;">
             <p style="margin:0 0 4px;font-size:11px;letter-spacing:3px;color:#c9a84c;text-transform:uppercase;">Amethyst Aura Aesthetics Spa</p>
@@ -274,7 +262,6 @@ function thankYouEmailHtml(data: any): string {
           </td>
         </tr>
         <tr><td style="height:40px;"></td></tr>
-
       </table>
     </td></tr>
   </table>
@@ -319,11 +306,25 @@ serve(async (req) => {
       });
     }
 
+    // PATH D: new booking → notify admin of pending payment (no receipt yet)
+    if (type === 'pending_payment') {
+      await resend.emails.send({
+        from: "Amethyst Aura <noreply@amethystauraspa.com.ng>",
+        to: ["amethystauramedspa26@gmail.com"],
+        subject: `🔔 New Booking — Awaiting Payment: ${name}`,
+        html: adminEmailHtml({ name, email, phone, date, time, services, total_price, receipt_url: null }),
+      });
+      return new Response(JSON.stringify({ success: true }), {
+        status: 200,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+
     // PATH B: receipt uploaded → notification email to ADMIN
     await resend.emails.send({
       from: "Amethyst Aura <noreply@amethystauraspa.com.ng>",
       to: ["amethystauramedspa26@gmail.com"],
-      subject: `⚡New Booking Received: ${name} — Action Required`,
+      subject: `⚡ New Booking Received: ${name} — Action Required`,
       html: adminEmailHtml({ name, email, phone, date, time, services, total_price, receipt_url }),
     });
     return new Response(JSON.stringify({ success: true }), {
