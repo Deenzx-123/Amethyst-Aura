@@ -269,6 +269,92 @@ function thankYouEmailHtml(data: any): string {
 </html>`;
 }
 
+function pendingPaymentEmailHtml(data: any): string {
+  const { name, email, phone, date, time, services, total_price } = data;
+  const serviceRows = Array.isArray(services) ? formatServices(services) : `<tr><td colspan="2" style="color:#cccccc;padding:10px 0;">No services listed</td></tr>`;
+
+  return `
+<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>New Booking — Payment Pending</title></head>
+<body style="margin:0;padding:0;background:#0d0d0d;font-family:Georgia,serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background:#0d0d0d;padding:40px 0;">
+    <tr><td align="center">
+      <table width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;">
+        <tr>
+          <td style="background:#111111;border-top:3px solid #c9a84c;padding:40px;text-align:center;">
+            <p style="margin:0 0 8px;font-size:11px;letter-spacing:6px;color:#c9a84c;text-transform:uppercase;">Amethyst Aura Aesthetics Spa</p>
+            <h1 style="margin:0;font-size:26px;color:#ffffff;font-weight:normal;letter-spacing:2px;">New Booking — Payment Not Yet Made</h1>
+            <div style="width:40px;height:1px;background:#c9a84c;margin:20px auto 0;"></div>
+          </td>
+        </tr>
+        <tr>
+          <td style="background:#1a1600;border-left:3px solid #c9a84c;border-right:3px solid #c9a84c;padding:20px 40px;">
+            <p style="margin:0;font-size:13px;color:#c9a84c;letter-spacing:1px;line-height:1.8;">🔔 A customer has just filled in their booking details and selected their services, but has <strong>not yet uploaded a payment receipt</strong>. No payment has been made at this time.</p>
+            <p style="margin:12px 0 0;font-size:13px;color:#888888;line-height:1.8;">If you do not receive a payment receipt from this customer within a few minutes, kindly reach out to them directly using the contact details below to check if they need assistance completing their payment.</p>
+          </td>
+        </tr>
+        <tr>
+          <td style="background:#141414;border-left:3px solid #c9a84c;border-right:3px solid #c9a84c;padding:36px 40px 0;">
+            <p style="margin:0 0 20px;font-size:10px;letter-spacing:4px;color:#c9a84c;text-transform:uppercase;">Customer Details</p>
+            <table width="100%" cellpadding="0" cellspacing="0">
+              <tr>
+                <td style="padding:8px 0;color:#888888;font-size:12px;letter-spacing:2px;text-transform:uppercase;width:120px;">Name</td>
+                <td style="padding:8px 0;color:#ffffff;font-size:14px;">\${name}</td>
+              </tr>
+              <tr>
+                <td style="padding:8px 0;color:#888888;font-size:12px;letter-spacing:2px;text-transform:uppercase;">Email</td>
+                <td style="padding:8px 0;color:#ffffff;font-size:14px;">\${email}</td>
+              </tr>
+              <tr>
+                <td style="padding:8px 0;color:#888888;font-size:12px;letter-spacing:2px;text-transform:uppercase;">Phone</td>
+                <td style="padding:8px 0;color:#ffffff;font-size:14px;">\${phone}</td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+        <tr><td style="background:#141414;border-left:3px solid #c9a84c;border-right:3px solid #c9a84c;padding:24px 40px;"><div style="height:1px;background:#2a2a2a;"></div></td></tr>
+        <tr>
+          <td style="background:#141414;border-left:3px solid #c9a84c;border-right:3px solid #c9a84c;padding:0 40px;">
+            <p style="margin:0 0 20px;font-size:10px;letter-spacing:4px;color:#c9a84c;text-transform:uppercase;">Requested Appointment</p>
+            <table width="100%" cellpadding="0" cellspacing="0">
+              <tr>
+                <td style="padding:8px 0;color:#888888;font-size:12px;letter-spacing:2px;text-transform:uppercase;width:120px;">Date</td>
+                <td style="padding:8px 0;color:#ffffff;font-size:14px;">\${date}</td>
+              </tr>
+              <tr>
+                <td style="padding:8px 0;color:#888888;font-size:12px;letter-spacing:2px;text-transform:uppercase;">Time</td>
+                <td style="padding:8px 0;color:#ffffff;font-size:14px;">\${time}</td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+        <tr><td style="background:#141414;border-left:3px solid #c9a84c;border-right:3px solid #c9a84c;padding:24px 40px;"><div style="height:1px;background:#2a2a2a;"></div></td></tr>
+        <tr>
+          <td style="background:#141414;border-left:3px solid #c9a84c;border-right:3px solid #c9a84c;padding:0 40px 36px;">
+            <p style="margin:0 0 16px;font-size:10px;letter-spacing:4px;color:#c9a84c;text-transform:uppercase;">Services Selected</p>
+            <table width="100%" cellpadding="0" cellspacing="0">
+              \${serviceRows}
+              <tr>
+                <td style="padding:16px 0 0;color:#ffffff;font-size:12px;letter-spacing:3px;text-transform:uppercase;">Total Amount Due</td>
+                <td style="padding:16px 0 0;text-align:right;color:#c9a84c;font-size:20px;">₦\${total_price?.toLocaleString() ?? "0"}</td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+        <tr>
+          <td style="background:#0d0d0d;border:3px solid #c9a84c;border-top:none;padding:28px 40px;text-align:center;">
+            <p style="margin:0;font-size:11px;color:#555555;letter-spacing:2px;line-height:1.8;">This is an automated alert. No action is needed if the customer uploads their receipt shortly. Only follow up if payment is not received within a few minutes.</p>
+          </td>
+        </tr>
+        <tr><td style="height:40px;"></td></tr>
+      </table>
+    </td></tr>
+  </table>
+</body>
+</html>`;
+}
+
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response('ok', { headers: corsHeaders });
@@ -311,8 +397,8 @@ serve(async (req) => {
       await resend.emails.send({
         from: "Amethyst Aura <noreply@amethystauraspa.com.ng>",
         to: ["amethystauramedspa26@gmail.com"],
-        subject: `🔔 New Booking — Awaiting Payment: ${name}`,
-        html: adminEmailHtml({ name, email, phone, date, time, services, total_price, receipt_url: null }),
+        subject: `🔔 New Booking Received — Payment Not Yet Made: ${name}`,
+        html: pendingPaymentEmailHtml({ name, email, phone, date, time, services, total_price }),
       });
       return new Response(JSON.stringify({ success: true }), {
         status: 200,
