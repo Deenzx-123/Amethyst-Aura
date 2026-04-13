@@ -29,6 +29,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
   const [activeTab, setActiveTab] = useState<'bookings' | 'services'>('bookings');
   const [editingBooking, setEditingBooking] = useState<Appointment | null>(null);
   const [editingService, setEditingService] = useState<Service | null>(null);
+  const [saving, setSaving] = useState(false);
 
   const updateBooking = async (updated: Appointment) => {
     const { error } = await supabase
@@ -40,26 +41,67 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
     setEditingBooking(null);
   };
 
-  const saveService = (service: Service) => {
-    if (services.find(s => s.id === service.id)) {
+  const saveService = async (service: Service) => {
+    setSaving(true);
+    const isExisting = services.find(s => s.id === service.id);
+
+    const row = {
+      id: service.id,
+      name: service.name,
+      category: service.category,
+      price: service.priceType === 'variable' ? null : (service.price ?? null),
+      price_type: service.priceType ?? 'fixed',
+      price_range: service.priceRange ?? null,
+      duration: service.duration ?? null,
+    };
+
+    if (isExisting) {
+      const { error } = await supabase
+        .from("services")
+        .update(row)
+        .eq("id", service.id);
+      if (error) {
+        console.error("Update service failed:", error);
+        alert("Failed to update service.");
+        setSaving(false);
+        return;
+      }
       setServices(prev => prev.map(s => s.id === service.id ? service : s));
     } else {
+      const { error } = await supabase
+        .from("services")
+        .insert(row);
+      if (error) {
+        console.error("Insert service failed:", error);
+        alert("Failed to add service.");
+        setSaving(false);
+        return;
+      }
       setServices(prev => [...prev, service]);
     }
+
+    setSaving(false);
     setEditingService(null);
   };
 
-  const deleteService = (id: string) => {
-    if (confirm('Delete this treatment?')) setServices(prev => prev.filter(s => s.id !== id));
+  const deleteService = async (id: string) => {
+    if (!confirm('Delete this treatment?')) return;
+    const { error } = await supabase.from("services").delete().eq("id", id);
+    if (error) {
+      console.error("Delete service failed:", error);
+      alert("Failed to delete service.");
+      return;
+    }
+    setServices(prev => prev.filter(s => s.id !== id));
   };
 
   const statusBadge = (status: string) => {
     const map: Record<string, string> = {
-      confirmed:       'bg-green-50 text-green-600',
-      payment_uploaded:'bg-yellow-50 text-yellow-600',
-      completed:       'bg-purple-50 text-purple-600',
-      cancelled:       'bg-red-50 text-red-400',
-      pending_payment: 'bg-aura-bone text-aura-gold',
+      confirmed:        'bg-green-50 text-green-600',
+      payment_uploaded: 'bg-yellow-50 text-yellow-600',
+      completed:        'bg-purple-50 text-purple-600',
+      cancelled:        'bg-red-50 text-red-400',
+      pending_payment:  'bg-aura-bone text-aura-gold',
     };
     return map[status] ?? 'bg-aura-bone text-aura-gold';
   };
@@ -129,7 +171,6 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                   <span className="text-xl font-serif italic text-aura-gold font-black">₦{(booking.totalPrice ?? 0).toLocaleString()}</span>
                 </div>
 
-                {/* Confirm Payment — shows when receipt is uploaded */}
                 {booking.status === 'payment_uploaded' && (
                   <button onClick={() => onConfirmPayment(booking)}
                     className="w-full bg-aura-gold text-white py-4 rounded-full text-[10px] font-black uppercase tracking-widest flex items-center justify-center gap-2 hover:brightness-110 transition-all shadow-md mb-3">
@@ -137,7 +178,6 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                   </button>
                 )}
 
-                {/* Mark as Completed — shows only when confirmed */}
                 {booking.status === 'confirmed' && (
                   <button onClick={() => onCompleteBooking(booking)}
                     className="w-full bg-aura-charcoal text-white py-4 rounded-full text-[10px] font-black uppercase tracking-widest flex items-center justify-center gap-2 hover:bg-aura-gold transition-all shadow-md">
@@ -159,7 +199,13 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
             <div className="flex justify-between items-center border-b pb-8">
               <h2 className="text-4xl font-serif text-aura-charcoal italic">Menu Editor</h2>
               <button
-                onClick={() => setEditingService({ id: Math.random().toString(36).substr(2, 9), name: '', price: 0, category: ServiceCategory.MASSAGE })}
+                onClick={() => setEditingService({
+                  id: `svc-${Date.now()}`,
+                  name: '',
+                  price: 0,
+                  category: ServiceCategory.MASSAGE,
+                  priceType: 'fixed',
+                })}
                 className="bg-aura-gold text-white px-8 py-3 rounded-full text-[10px] font-black uppercase tracking-widest flex items-center gap-3 shadow-md hover:brightness-110">
                 <Plus size={14} /> Add Treatment
               </button>
@@ -178,7 +224,9 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                             <span className="text-[9px] text-aura-slate/30 font-bold uppercase tracking-widest mt-1">{s.duration || 'Standard Session'}</span>
                           </div>
                           <div className="flex items-center gap-10">
-                            <span className="text-lg font-serif italic text-aura-gold font-black">₦{(s.price ?? 0).toLocaleString()}</span>
+                            <span className="text-lg font-serif italic text-aura-gold font-black">
+                              {s.priceType === 'variable' ? s.priceRange : `₦${(s.price ?? 0).toLocaleString()}`}
+                            </span>
                             <div className="flex gap-2">
                               <button onClick={() => setEditingService(s)} className="p-2 text-aura-slate/20 hover:text-aura-gold transition-colors"><Edit2 size={16} /></button>
                               <button onClick={() => deleteService(s.id)} className="p-2 text-aura-slate/20 hover:text-red-400 transition-colors"><Trash2 size={16} /></button>
@@ -186,6 +234,9 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                           </div>
                         </div>
                       ))}
+                      {catServices.length === 0 && (
+                        <p className="text-[10px] text-aura-slate/30 font-bold uppercase tracking-widest py-4">No services in this category</p>
+                      )}
                     </div>
                   </div>
                 );
@@ -195,6 +246,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
         )}
       </main>
 
+      {/* Booking Edit Modal */}
       {editingBooking && (
         <div className="fixed inset-0 z-[210] bg-black/70 backdrop-blur-sm flex items-center justify-center p-6">
           <div className="bg-white w-full max-w-lg rounded-[3rem] p-12 shadow-aura-elevated animate-fade-up">
@@ -214,20 +266,94 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
         </div>
       )}
 
+      {/* Service Edit Modal */}
       {editingService && (
         <div className="fixed inset-0 z-[210] bg-black/70 backdrop-blur-sm flex items-center justify-center p-6">
           <div className="bg-white w-full max-w-lg rounded-[3rem] p-12 shadow-aura-elevated animate-fade-up">
-            <h2 className="text-3xl font-serif text-aura-charcoal mb-8 italic">{services.find(s => s.id === editingService.id) ? 'Update Treatment' : 'New Treatment'}</h2>
+            <h2 className="text-3xl font-serif text-aura-charcoal mb-8 italic">
+              {services.find(s => s.id === editingService.id) ? 'Update Treatment' : 'New Treatment'}
+            </h2>
             <div className="space-y-6">
-              <input placeholder="Name" value={editingService.name} onChange={e => setEditingService({...editingService, name: e.target.value})} className="w-full bg-aura-bone p-4 rounded-2xl text-xs font-bold" />
-              <input type="number" placeholder="Price (₦)" value={editingService.price} onChange={e => setEditingService({...editingService, price: parseInt(e.target.value) || 0})} className="w-full bg-aura-bone p-4 rounded-2xl text-xs font-bold" />
-              <select value={editingService.category} onChange={e => setEditingService({...editingService, category: e.target.value as ServiceCategory})} className="w-full bg-aura-bone p-4 rounded-2xl text-xs font-bold">
-                {Object.values(ServiceCategory).map(c => <option key={c} value={c}>{c}</option>)}
-              </select>
-              <input placeholder="Duration (e.g. 60 Min)" value={editingService.duration || ''} onChange={e => setEditingService({...editingService, duration: e.target.value})} className="w-full bg-aura-bone p-4 rounded-2xl text-xs font-bold" />
-              <div className="flex gap-4">
-                <button onClick={() => saveService(editingService)} className="flex-1 bg-aura-charcoal text-white py-5 rounded-full text-[10px] font-bold uppercase tracking-widest hover:bg-aura-gold transition-all flex items-center justify-center gap-2"><Save size={14} /> Commit</button>
-                <button onClick={() => setEditingService(null)} className="flex-1 border py-5 rounded-full text-[10px] font-bold uppercase tracking-widest">Cancel</button>
+              <div>
+                <label className="block text-[9px] font-black uppercase tracking-widest text-aura-gold mb-2">Service Name</label>
+                <input
+                  placeholder="Service name"
+                  value={editingService.name}
+                  onChange={e => setEditingService({...editingService, name: e.target.value})}
+                  className="w-full bg-aura-bone p-4 rounded-2xl text-xs font-bold"
+                />
+              </div>
+
+              <div>
+                <label className="block text-[9px] font-black uppercase tracking-widest text-aura-gold mb-2">Category</label>
+                <select
+                  value={editingService.category}
+                  onChange={e => setEditingService({...editingService, category: e.target.value as ServiceCategory})}
+                  className="w-full bg-aura-bone p-4 rounded-2xl text-xs font-bold"
+                >
+                  {Object.values(ServiceCategory).map(c => <option key={c} value={c}>{c}</option>)}
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-[9px] font-black uppercase tracking-widest text-aura-gold mb-2">Price Type</label>
+                <select
+                  value={editingService.priceType ?? 'fixed'}
+                  onChange={e => setEditingService({...editingService, priceType: e.target.value as 'fixed' | 'variable'})}
+                  className="w-full bg-aura-bone p-4 rounded-2xl text-xs font-bold"
+                >
+                  <option value="fixed">Fixed Price</option>
+                  <option value="variable">Variable / Range</option>
+                </select>
+              </div>
+
+              {(editingService.priceType ?? 'fixed') === 'fixed' ? (
+                <div>
+                  <label className="block text-[9px] font-black uppercase tracking-widest text-aura-gold mb-2">Price (₦)</label>
+                  <input
+                    type="number"
+                    placeholder="e.g. 35000"
+                    value={editingService.price ?? ''}
+                    onChange={e => setEditingService({...editingService, price: parseInt(e.target.value) || 0})}
+                    className="w-full bg-aura-bone p-4 rounded-2xl text-xs font-bold"
+                  />
+                </div>
+              ) : (
+                <div>
+                  <label className="block text-[9px] font-black uppercase tracking-widest text-aura-gold mb-2">Price Range</label>
+                  <input
+                    placeholder="e.g. ₦60,000 – ₦100,000"
+                    value={editingService.priceRange ?? ''}
+                    onChange={e => setEditingService({...editingService, priceRange: e.target.value})}
+                    className="w-full bg-aura-bone p-4 rounded-2xl text-xs font-bold"
+                  />
+                </div>
+              )}
+
+              <div>
+                <label className="block text-[9px] font-black uppercase tracking-widest text-aura-gold mb-2">Duration (optional)</label>
+                <input
+                  placeholder="e.g. 60 Min"
+                  value={editingService.duration || ''}
+                  onChange={e => setEditingService({...editingService, duration: e.target.value})}
+                  className="w-full bg-aura-bone p-4 rounded-2xl text-xs font-bold"
+                />
+              </div>
+
+              <div className="flex gap-4 pt-2">
+                <button
+                  onClick={() => saveService(editingService)}
+                  disabled={saving}
+                  className="flex-1 bg-aura-charcoal text-white py-5 rounded-full text-[10px] font-bold uppercase tracking-widest hover:bg-aura-gold transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+                >
+                  <Save size={14} /> {saving ? 'Saving...' : 'Save Changes'}
+                </button>
+                <button
+                  onClick={() => setEditingService(null)}
+                  className="flex-1 border py-5 rounded-full text-[10px] font-bold uppercase tracking-widest"
+                >
+                  Cancel
+                </button>
               </div>
             </div>
           </div>
