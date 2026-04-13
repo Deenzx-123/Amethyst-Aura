@@ -128,17 +128,40 @@ const App: React.FC = () => {
     setBookings(mappedBookings);
   };
 
+  const loadServices = async () => {
+    const { data, error } = await supabase
+      .from("services")
+      .select("*")
+      .order("id");
+
+    if (error || !data || data.length === 0) {
+      // Fallback to constants if DB empty or error
+      const merged = [
+        ...INITIAL_SERVICES,
+        ...VALENTINE_SERVICES.filter(v => !INITIAL_SERVICES.some(s => s.id === v.id)),
+      ];
+      setServices(merged.map(s => ({
+        ...s,
+        priceType: s.priceType ?? "fixed",
+        priceRange: s.priceRange,
+      })));
+      return;
+    }
+
+    setServices(data.map((s: any) => ({
+      id: s.id,
+      name: s.name,
+      category: s.category,
+      price: s.price ?? undefined,
+      priceType: s.price_type ?? "fixed",
+      priceRange: s.price_range ?? undefined,
+      duration: s.duration ?? undefined,
+    })));
+  };
+
   useEffect(() => {
     loadBookings();
-    const merged = [
-      ...INITIAL_SERVICES,
-      ...VALENTINE_SERVICES.filter(v => !INITIAL_SERVICES.some(s => s.id === v.id)),
-    ];
-    setServices(merged.map(s => ({
-      ...s,
-      priceType: s.priceType ?? "fixed",
-      priceRange: s.priceRange,
-    })));
+    loadServices();
   }, []);
 
   const generateCalendarDays = () => {
