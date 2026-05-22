@@ -8,7 +8,7 @@ import ReviewsSection from "./components/ReviewsSection";
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { 
   Menu, X, MapPin, Heart, ArrowRight,
-  Plus, Trash2, CheckCircle, Calendar as CalendarIcon,
+  Plus, Minus, Trash2, CheckCircle, Calendar as CalendarIcon,
   Phone, Mail, Instagram,
   Clock, Sparkles, ShieldCheck, ShoppingBag, Loader2,
   ChevronLeft, ChevronRight
@@ -79,7 +79,7 @@ const App: React.FC = () => {
   const [showConsultationPopup, setShowConsultationPopup] = useState(false);
   const [consultService, setConsultService] = useState<Service | null>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
-  const [selectedServices, setSelectedServices] = useState<Service[]>([]);
+  const [selectedServices, setSelectedServices] = useState<{ service: Service; qty: number }[]>([]);
   const [bookingDate, setBookingDate] = useState('');
   const [bookingTime, setBookingTime] = useState('');
   const [formData, setFormData] = useState({ name: '', email: '', phone: '' });
@@ -229,29 +229,39 @@ const App: React.FC = () => {
     };
   }, []);
 
-  const hasVariableService = useMemo(() => selectedServices.some(s => s.priceType === "variable"), [selectedServices]);
-  const totalPrice = useMemo(() => hasVariableService ? 0 : selectedServices.reduce((sum, s) => sum + (s.price ?? 0), 0), [selectedServices, hasVariableService]);
+  const hasVariableService = useMemo(() => selectedServices.some(e => e.service.priceType === "variable"), [selectedServices]);
+const totalPrice = useMemo(() => hasVariableService ? 0 : selectedServices.reduce((sum, e) => sum + (e.service.price ?? 0) * e.qty, 0), [selectedServices, hasVariableService]);
 
-  const toggleService = (service: Service) => {
-    if (service.priceType === "variable") {
-      setConsultService(service);
-      setShowConsultationPopup(true);
-      return;
-    }
-    const exists = selectedServices.find(s => s.id === service.id);
-    if (exists) {
-      setSelectedServices(selectedServices.filter(s => s.id !== service.id));
-    } else {
-      setSelectedServices([...selectedServices, service]);
-      if (window.innerWidth >= 1024) setIsBookingVisible(true);
-    }
-  };
+const addService = (service: Service) => {
+  if (service.priceType === "variable") {
+    setConsultService(service);
+    setShowConsultationPopup(true);
+    return;
+  }
+  setSelectedServices(prev => {
+    const exists = prev.find(e => e.service.id === service.id);
+    if (exists) return prev.map(e => e.service.id === service.id ? { ...e, qty: e.qty + 1 } : e);
+    if (window.innerWidth >= 1024) setIsBookingVisible(true);
+    return [...prev, { service, qty: 1 }];
+  });
+};
+
+const removeService = (serviceId: string) => {
+  setSelectedServices(prev => {
+    const exists = prev.find(e => e.service.id === serviceId);
+    if (!exists) return prev;
+    if (exists.qty <= 1) return prev.filter(e => e.service.id !== serviceId);
+    return prev.map(e => e.service.id === serviceId ? { ...e, qty: e.qty - 1 } : e);
+  });
+};
+
+const toggleService = (service: Service) => addService(service);
 
   const handleConfirmBooking = async (e: React.FormEvent) => {
     e.preventDefault();
     if (selectedServices.length === 0 || !bookingDate || !bookingTime) return;
     setIsSyncing(true);
-    const dbServices = selectedServices.map(s => ({ id: s.id, name: s.name, price: s.price, duration: s.duration }));
+    const dbServices = selectedServices.flatMap(e => Array(e.qty).fill({ id: e.service.id, name: e.service.name, price: e.service.price, duration: e.service.duration }));
     const { data, error } = await supabase
       .from("bookings")
       .insert([{
@@ -386,7 +396,7 @@ const handleReceiptUpload = async () => {
               </div>
               <div className="flex items-center gap-3">
                 <button onClick={() => setIsBookingVisible(true)} className="bg-aura-gold text-white text-[9px] font-black px-4 py-2.5 rounded-full uppercase tracking-widest shadow-lg flex items-center gap-2">
-                  <ShoppingBag size={12} /> {selectedServices.length > 0 ? `(${selectedServices.length})` : 'BOOK'}
+                  <ShoppingBag size={12} /> {selectedServices.reduce((n, e) => n + e.qty, 0) > 0 ? `(${selectedServices.reduce((n, e) => n + e.qty, 0)})` : 'BOOK'}
                 </button>
                 <button onClick={() => setIsMenuOpen(!isMenuOpen)} className={isMenuOpen ? 'text-aura-charcoal' : (isScrolled ? 'text-aura-charcoal' : 'text-white')}>
                   {isMenuOpen ? <X size={28} /> : <Menu size={28} />}
@@ -424,7 +434,7 @@ const handleReceiptUpload = async () => {
                   </a>
                 ))}
                 <button onClick={() => setIsBookingVisible(true)} className="text-[9px] font-black px-8 py-3.5 rounded-full uppercase tracking-[0.2em] bg-white text-aura-charcoal hover:bg-aura-gold hover:text-white transition-all shadow-xl">
-                  {selectedServices.length > 0 ? `(${selectedServices.length}) COMPLETE` : 'RESERVE NOW'}
+                  {selectedServices.reduce((n, e) => n + e.qty, 0) > 0 ? `(${selectedServices.reduce((n, e) => n + e.qty, 0)}) COMPLETE` : 'RESERVE NOW'}
                 </button>
               </div>
             </nav>
@@ -502,7 +512,8 @@ const handleReceiptUpload = async () => {
                         <h4 className="text-[10px] font-black uppercase tracking-[0.5em] text-aura-gold mb-12 text-center">{cat}</h4>
                         <div className="grid gap-4 max-w-4xl mx-auto">
                           {categoryServices.map((service) => {
-                            const isSelected = !!selectedServices.find(s => s.id === service.id);
+                            const entry = selectedServices.find(e => e.service.id === service.id);
+                            const isSelected = !!entry;
                             return (
                               <div key={service.id} onClick={() => toggleService(service)} className={`group flex items-center justify-between p-8 rounded-3xl border transition-all duration-300 cursor-pointer ${isSelected ? 'border-aura-gold bg-aura-bone/50 shadow-lg' : 'border-aura-beige/20 hover:border-aura-gold/50 hover:bg-aura-bone/20 hover:shadow-lg'}`}>
                                 <div>
@@ -512,7 +523,11 @@ const handleReceiptUpload = async () => {
                                 <div className="flex items-center gap-6">
                                   <span className="text-xl font-serif italic text-aura-gold">{service.priceType === "variable" ? "Price varies" : `₦${service.price?.toLocaleString()}`}</span>
                                   <div className={`w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300 ${isSelected ? 'bg-aura-gold text-white' : 'bg-aura-bone group-hover:bg-aura-gold group-hover:text-white'}`}>
-                                    {isSelected ? <CheckCircle size={18} /> : <Plus size={18} />}
+                                {isSelected ? (
+                                <div className="flex items-center gap-1 text-xs font-bold">
+                                  <span>{entry!.qty}×</span>
+                                </div>
+                              ) : <Plus size={18} />}
                                   </div>
                                 </div>
                               </div>
@@ -601,12 +616,16 @@ const handleReceiptUpload = async () => {
                   <div className="mb-10 p-6 bg-aura-bone rounded-[2rem] space-y-4">
                     <p className="text-[10px] font-black uppercase tracking-widest text-aura-gold">Selected Rituals</p>
                     <div className="space-y-3">
-                      {selectedServices.map((s) => (
-                        <div key={s.id} className="flex justify-between items-center">
-                          <span className="text-sm font-bold text-aura-charcoal">{s.name}</span>
-                          <button onClick={() => toggleService(s)} className="text-aura-slate/40 hover:text-red-500 transition-colors"><Trash2 size={14} /></button>
-                        </div>
-                      ))}
+                      {selectedServices.map((e) => (
+                    <div key={e.service.id} className="flex justify-between items-center gap-2">
+                      <span className="text-sm font-bold text-aura-charcoal flex-1">{e.service.name}</span>
+                      <div className="flex items-center gap-1">
+                        <button onClick={() => removeService(e.service.id)} className="w-6 h-6 rounded-full border flex items-center justify-center text-aura-slate hover:bg-red-50"><Minus size={12} /></button>
+                        <span className="text-xs font-bold w-4 text-center">{e.qty}</span>
+                        <button onClick={() => addService(e.service)} className="w-6 h-6 rounded-full bg-aura-gold text-white flex items-center justify-center"><Plus size={12} /></button>
+                      </div>
+                    </div>
+                  ))}
                     </div>
                     <div className="pt-4 border-t border-aura-beige/30 flex justify-between items-end">
                       <span className="text-[10px] font-black uppercase tracking-widest text-aura-charcoal">Total Investment</span>
