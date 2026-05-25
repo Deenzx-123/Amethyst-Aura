@@ -261,7 +261,12 @@ const toggleService = (service: Service) => addService(service);
     e.preventDefault();
     if (selectedServices.length === 0 || !bookingDate || !bookingTime) return;
     setIsSyncing(true);
-    const dbServices = selectedServices.flatMap(e => Array(e.qty).fill({ id: e.service.id, name: e.service.name, price: e.service.price, duration: e.service.duration }));
+    const dbServices = selectedServices.map(e => ({ 
+	  id: e.service.id, 
+	  name: e.qty > 1 ? `${e.service.name} x${e.qty}` : e.service.name, 
+	  price: (e.service.price ?? 0) * e.qty, 
+	  duration: e.service.duration 
+	}));
     const { data, error } = await supabase
       .from("bookings")
       .insert([{
